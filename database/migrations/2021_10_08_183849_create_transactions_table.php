@@ -15,13 +15,14 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('sender_id');
-            $table->unsignedInteger('recipient_id');
+            $table->unsignedBigInteger('sender_id');
+            $table->unsignedBigInteger('recipient_id');
             $table->unsignedBigInteger('amount');
             $table->enum('status', ['planned', 'completed'])->default('planned');
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
-
+        });
+        Schema::table('transactions', function (Blueprint $table) {
             $table->foreign('sender_id')->references('id')->on('users');
             $table->foreign('recipient_id')->references('id')->on('users');
         });

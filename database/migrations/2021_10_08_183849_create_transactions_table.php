@@ -19,6 +19,7 @@ class CreateTransactionsTable extends Migration
             $table->unsignedBigInteger('recipient_id');
             $table->unsignedBigInteger('amount');
             $table->enum('status', ['planned', 'completed'])->default('planned');
+            $table->timestamp('planned_at');
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
         });

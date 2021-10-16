@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AddTransactionController extends Controller
 {
+    private const DATE_FORMAT = 'd/m/Y H';
+
     public function index() {
         $users = DB::table('users')
             ->selectRaw('
@@ -48,15 +52,23 @@ class AddTransactionController extends Controller
             ],
             'datetime' => [
                 'required',
-                'date_format:d/m/Y H',
+                'date_format:' . self::DATE_FORMAT,
                 'after:' . now()->setSecond(59)->setMinute(59),
             ],
         ]);
-        dd($request->all());
+
+        $transaction = Transaction::create([
+            'sender_id' => $request->sender,
+            'recipient_id' =>  $request->recipient,
+            'amount' => $request->amount,
+            'planned_at' => $this->prepareDate($request->datetime),
+        ]);
+
+        return redirect('createTransaction');
     }
 
     public function selectRecipient(Request $request) {
-        if ($request->ajax() && $request->has('id_sender')){
+        if ($request->ajax() && $request->has('id_sender')) {
 
             $recipients =  User::all(['id', 'name'])->except($request->get('id_sender'))->toArray();
             $data = view('selectRecipient', ['recipients' => $recipients])->render();
@@ -66,12 +78,12 @@ class AddTransactionController extends Controller
 
     public function senderMaxAmount(Request $request) {
         if ($request->ajax() && $request->has('id_sender')){
-            $max_amount = $this->getUserMaxAmount($request->get('id_sender'));
+            $max_amount = $this->getMaxAmountByUserId($request->get('id_sender'));
             return response()->json(['max_amount' => $max_amount]);
         }
     }
 
-    private function getMaxAmountByUserId(int $id) {
+    private function getMaxAmountByUserId(int $id): int {
         $user = User::findOrFail($id);
         $planned_amount = DB::table('transactions')
             ->select('amount')
@@ -80,6 +92,11 @@ class AddTransactionController extends Controller
             ->sum('amount');
 
         return $user->balance - $planned_amount;
+    }
+
+    private function prepareDate(string $date): string {
+        $carbon_date_time = Carbon::createFromFormat(self::DATE_FORMAT, $date);
+        return $carbon_date_time->toDateTimeString();
     }
 
 }

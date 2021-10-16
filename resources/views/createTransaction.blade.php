@@ -111,9 +111,9 @@
                 @foreach($users as $user)
                     <tr>
                         <td>{{ $user->name }}</td>
-                        <td>{{ $user->recipient_name }}</td>
-                        <td>{{ $user->amount }}</td>
-                        <td>{{ $user->completed }}</td>
+                        <td>{{ $user->completed ? $user->recipient_name : '' }}</td>
+                        <td>{{ $user->completed ? $user->amount : '' }}</td>
+                        <td>{{ $user->completed ?: '' }}</td>
                     </tr>
                 @endforeach
                 </tbody>

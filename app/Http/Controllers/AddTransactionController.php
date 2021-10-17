@@ -31,7 +31,7 @@ class AddTransactionController extends Controller
                             left join users u2 on u2.id = t.recipient_id
                             order by u.name asc;"));
 
-        $senders =  User::all(['id', 'name', 'balance'])->toArray();
+        $senders =  User::all(['id', 'name'])->toArray();
 
         return view('createTransaction', [
             'senders' => $senders,

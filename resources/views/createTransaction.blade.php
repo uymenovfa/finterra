@@ -33,7 +33,7 @@
                                 <option>{{ 'Select sender' }}</option>
                                 @foreach($senders as $sender)
                                     <option value="{{ $sender['id'] }}" {{ old('sender') == $sender['id'] ? "selected" :""}}>
-                                        {{ $sender['name'] . " (Balance: " . $sender['balance'] . ")" }}
+                                        {{ $sender['name'] }}
                                     </option>
                                 @endforeach
                             </select>
@@ -60,7 +60,7 @@
                             <label for="amount">{{ 'Amount' }}</label>
                             <input
                                 required="required"
-                                type="text"
+                                type="number"
                                 min="1"
                                 class="form-control @error('amount') is-invalid @enderror"
                                 name="amount"

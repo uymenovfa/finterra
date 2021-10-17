@@ -18,6 +18,6 @@ class Transaction extends Model
         'sender_id',
         'recipient_id',
         'amount',
-        'planned_at',
+        'status_at',
     ];
 }

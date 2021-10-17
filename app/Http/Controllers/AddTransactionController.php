@@ -13,18 +13,21 @@ class AddTransactionController extends Controller
     private const DATE_FORMAT = 'd/m/Y H';
 
     public function index() {
-        $users = DB::table('users')
-            ->selectRaw('
-                any_value(users.name) as name,
-                any_value(ur.name) as recipient_name,
-                any_value(transactions.amount) as amount,
-                max(transactions.completed_at) as completed
-            ')
-            ->leftJoin('transactions', 'users.id', '=', 'transactions.sender_id')
-            ->leftJoin('users as ur', 'ur.id', '=', 'transactions.recipient_id')
-            ->groupBy('users.id')
-            ->get()
-            ->toArray();
+            $users = DB::select(
+                DB::raw("select
+                                u.name as name,
+                                u2.name as recipient_name,
+                                t.amount as amount,
+                                t.status as completed
+                                from users as u
+                            left join transactions t
+                                on u.id = t.sender_id
+                                and t.status_at=(
+                                    select status_at from transactions t2
+                                    where t2.status = 'completed' and t2.sender_id=u.id
+                                    order by status_at desc limit 1
+                                )
+                            left join users u2 on u2.id = t.recipient_id;"));
 
         $senders =  User::all(['id', 'name', 'balance'])->toArray();
 
@@ -35,7 +38,7 @@ class AddTransactionController extends Controller
     }
 
     public function formSubmit(Request $request) {
-        $validated = $request->validate([
+        $request->validate([
             'sender' =>[
                 'required',
                 'exists:App\Models\User,id',
@@ -57,11 +60,11 @@ class AddTransactionController extends Controller
             ],
         ]);
 
-        $transaction = Transaction::create([
+        Transaction::create([
             'sender_id' => $request->sender,
             'recipient_id' =>  $request->recipient,
             'amount' => $request->amount,
-            'planned_at' => $this->prepareDate($request->datetime),
+            'status_at' => $this->prepareDate($request->datetime),
         ]);
 
         return redirect('createTransaction');
@@ -96,7 +99,7 @@ class AddTransactionController extends Controller
 
     private function prepareDate(string $date): string {
         $carbon_date_time = Carbon::createFromFormat(self::DATE_FORMAT, $date);
-        return $carbon_date_time->toDateTimeString();
+        return $carbon_date_time->format('Y-m-d H:i:s.u');
     }
 
 }

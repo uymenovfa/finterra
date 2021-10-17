@@ -19,9 +19,9 @@
         @csrf
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
+                <h3>{{ 'Create transaction form' }}</h3>
                 <div class="panel panel-default">
                     <div class="panel-body">
-
                         <div class="form-group">
                             <label for="sender">{{ 'Sender' }}</label>
                             <select
@@ -96,8 +96,10 @@
             </div>
         </div>
     </form>
+
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
+            <h3>{{ 'Table of all users with last transaction' }}</h3>
             <table class="table" >
                 <thead>
                 <tr>
@@ -113,7 +115,11 @@
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->completed ? $user->recipient_name : '' }}</td>
                         <td>{{ $user->completed ? $user->amount : '' }}</td>
-                        <td>{{ $user->completed ?: '' }}</td>
+                        <td>
+                            {{ $user->completed ?
+                                \Illuminate\Support\Carbon::createFromFormat('Y-m-d H:i:s.u', $user->completed)->toDateTimeString()
+                                : '' }}
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>

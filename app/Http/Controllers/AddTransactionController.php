@@ -19,7 +19,7 @@ class AddTransactionController extends Controller
                                 u.name as name,
                                 u2.name as recipient_name,
                                 t.amount as amount,
-                                t.status as completed
+                                t.status_at as completed
                                 from users as u
                             left join transactions t
                                 on u.id = t.sender_id
@@ -28,7 +28,8 @@ class AddTransactionController extends Controller
                                     where t2.status = 'completed' and t2.sender_id=u.id
                                     order by status_at desc limit 1
                                 )
-                            left join users u2 on u2.id = t.recipient_id;"));
+                            left join users u2 on u2.id = t.recipient_id
+                            order by u.name asc;"));
 
         $senders =  User::all(['id', 'name', 'balance'])->toArray();
 

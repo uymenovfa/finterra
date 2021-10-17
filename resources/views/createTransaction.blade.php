@@ -142,7 +142,6 @@
             method: 'POST',
             data: {id_sender: id_sender, _token: token},
             success: function (data) {
-                console.log(data.max_amount)
                 $("#amount").attr({
                     "max" : data.max_amount
                 });

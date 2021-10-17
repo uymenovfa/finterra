@@ -15,12 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('createTransaction', [AddTransactionController::class, 'index']);
-Route::post('createTransaction', [AddTransactionController::class, 'formSubmit']);
+Route::get('/', [AddTransactionController::class, 'index']);
+Route::post('/', [AddTransactionController::class, 'formSubmit']);
 
 Route::post('select_recipient', [AddTransactionController::class, 'selectRecipient'])->name('select_recipient');
 Route::post('sender_max_amount', [AddTransactionController::class, 'senderMaxAmount'])->name('sender_max_amount');

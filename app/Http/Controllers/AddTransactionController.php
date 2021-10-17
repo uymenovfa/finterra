@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class AddTransactionController extends Controller
 {
@@ -67,7 +68,7 @@ class AddTransactionController extends Controller
             'status_at' => $this->prepareDate($request->datetime),
         ]);
 
-        return redirect('createTransaction');
+        return Redirect::back();
     }
 
     public function selectRecipient(Request $request) {

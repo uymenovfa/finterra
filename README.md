@@ -29,7 +29,7 @@
    др.), либо в виде архива.
 
 <blockquote>
-Развертывание:
+<b>Развертывание:</b><br>
 git clone https://github.com/uymenovfa/finterra.git <br>
 cd finterra <br>
 docker-compose up -d <br>

@@ -27,11 +27,10 @@
    его
    Решение можно прислать ссылкой на хранилище исходного кода (GitHub, Bitbucket и
    др.), либо в виде архива.
-
 Развертывание:
 
-git clone <b>Тут репозиторий</b> <br>
-cd <b>Тут папка с проектом</b> <br>
+git clone https://github.com/uymenovfa/finterra.git <br>
+cd finterra <br>
 docker-compose up -d <br>
 docker-compose exec app composer install <br>
 docker-compose exec app php artisan migrate:refresh --seed <br>
